@@ -10,7 +10,9 @@ app.use(express.json());
 
 // Routes
 const userRoutes = require("./routes/user.routes");
+const productRoutes = require("./routes/product.routes");
 app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
 
 // Health check route
 app.get("/", (req, res) => {
