@@ -18,3 +18,23 @@ exports.addToCart = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+exports.viewCart = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const [cartItems] = await db.query(
+      `SELECT cart_items.id,
+        products.name,
+        products.price,
+        cart_items.quantity
+        FROM cart_items
+        JOIN products ON cart_items.product_id = products.id
+        WHERE cart_items.user_id = ?`,
+      [userId],
+    );
+    res.json(cartItems);
+  } catch (error) {
+    console.error("Error viewing cart:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
