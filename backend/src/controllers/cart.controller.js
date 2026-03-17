@@ -38,3 +38,24 @@ exports.viewCart = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+exports.removeFromCart = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const cartItemId = req.params.id;
+
+    const [result] = await db.query(
+      "DELETE FROM cart_items WHERE id = ? AND user_id = ?",
+      [cartItemId, userId],
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Cart item not found" });
+    }
+
+    res.json({ message: "Item removed from cart" });
+  } catch (error) {
+    console.error("Error removing from cart:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
