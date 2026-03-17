@@ -5,6 +5,9 @@ This project simulates how real-world online stores manage users, products, cart
 
 The goal of this project was to understand how modern backend systems handle **authentication, cart management, order processing, inventory updates, and payment verification**.
 
+## Project URL
+https://your-api-url.com
+
 ---
 
 # 🚀 Features
