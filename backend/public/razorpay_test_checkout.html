@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - Test Payment</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 320px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    button {
+      background: #3399cc;
+      border: none;
+      color: white;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background: #2b88b8;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #333;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Test Checkout</h2>
+    <p>Simulate a payment using Razorpay test mode.</p>
+
+    <button id="payBtn">Pay Now</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+<script>
+
+const API_BASE = "http://localhost:5000";
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJtaWFAdGVzdC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc3Mzc2NjExMCwiZXhwIjoxNzczNzY5NzEwfQ.Ow4FjiFtB6mJXDDBaWNouo2NDOJ4S9zGbKTFrJM5z6A";
+const RAZORPAY_KEY = "rzp_test_SSKY26EzNRnwDT";
+
+async function createOrder() {
+  const res = await fetch(`${API_BASE}/api/payments/create-order`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${TOKEN}`
+    }
+  });
+
+  return res.json();
+}
+
+async function verifyPayment(data) {
+  const res = await fetch(`${API_BASE}/api/payments/verify`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${TOKEN}`
+    },
+    body: JSON.stringify(data)
+  });
+
+  return res.json();
+}
+
+
+async function startPayment() {
+
+  const order = await createOrder();
+
+  const options = {
+    key: RAZORPAY_KEY,
+    amount: order.amount,
+    currency: order.currency,
+    name: "Akash Store",
+    description: "Test Payment",
+    order_id: order.razorpayOrderId,
+
+    handler: async function (response) {
+
+      document.getElementById("result").innerHTML = "Verifying payment...";
+
+      const verification = await verifyPayment(response);
+
+      document.getElementById("result").innerHTML = 
+        "Verification Result:<br><pre>" + JSON.stringify(verification, null, 2) + "</pre>";
+
+      console.log("Payment Response", response);
+      console.log("Verification", verification);
+
+    }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+}
+
+
+document.getElementById("payBtn").addEventListener("click", startPayment);
+
+</script>
+
+</body>
+</html>
