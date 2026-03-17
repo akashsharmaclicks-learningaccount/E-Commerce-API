@@ -71,8 +71,8 @@
 <script>
 
 const API_BASE = "http://localhost:5000";
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJtaWFAdGVzdC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc3Mzc2NjExMCwiZXhwIjoxNzczNzY5NzEwfQ.Ow4FjiFtB6mJXDDBaWNouo2NDOJ4S9zGbKTFrJM5z6A";
-const RAZORPAY_KEY = "rzp_test_SSKY26EzNRnwDT";
+const TOKEN = "PASTE_YOUR_JWT_TOKEN_HERE";
+const RAZORPAY_KEY = "PASTE_YOUR_RAZORPAY_KEY_HERE";
 
 async function createOrder() {
   const res = await fetch(`${API_BASE}/api/payments/create-order`, {
