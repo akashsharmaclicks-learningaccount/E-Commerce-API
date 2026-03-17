@@ -2,7 +2,7 @@ const db = require("../config/db");
 exports.checkout = async (req, res) => {
   try {
     const userId = req.user.id;
-    
+
     // Get cart items with product details
     const [cartItems] = await db.query(
       `SELECT cart_items.product_id, cart_items.quantity, products.price
@@ -41,6 +41,19 @@ exports.checkout = async (req, res) => {
     res.json({ message: "Order placed successfully", orderId });
   } catch (error) {
     console.error("Error during checkout:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.getOrders = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const [orders] = await db.query("SELECT * FROM orders WHERE user_id = ?", [
+      userId,
+    ]);
+    res.json(orders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
